@@ -1,0 +1,9 @@
+/.idea/*
+dist/*
+build/*
+/a.ppt
+/__pycache__/*
+/main.spec
+__pycache__
+build
+dist
