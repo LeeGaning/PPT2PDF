@@ -6,6 +6,7 @@
 """
 
 import os
+import pathlib
 import logging
 import sys
 from reportlab.lib.pagesizes import A4, landscape,portrait 
@@ -14,7 +15,7 @@ from reportlab.pdfgen import canvas
 import win32com.client
 from PIL import Image as pilImage
 
-logger = logging.getLogger('Sun')
+logger = logging.getLogger('PPT2PDF')
 logging.basicConfig(level=20,
                     # format="[%(name)s][%(levelname)s][%(asctime)s] %(message)s",
                     format="[%(levelname)s][%(asctime)s] %(message)s",
@@ -23,14 +24,19 @@ logging.basicConfig(level=20,
 
 
 def getFiles(dir, suffix, ifsubDir=True):  # 查找根目录，文件后缀
-    res = []
-    for root, directory, files in os.walk(dir):  # =>当前根,根下目录,目录下的文件
-        for filename in files:
-            name, suf = os.path.splitext(filename)  # =>文件名,文件后缀
-            if suf.upper() == suffix.upper():
-                res.append(os.path.join(root, filename))  # =>吧一串字符串组合成路径
-        if False is ifsubDir:
-            break
+    if ifsubDir:
+        rules = f"**/*{suffix}"
+    else:
+        rules = f"*{suffix}"
+    files = pathlib.Path(dir).glob(rules)
+    res = list(sorted(files,key=os.path.getmtime))
+    # for root, directory, files in os.walk(dir):  # =>当前根,根下目录,目录下的文件
+    #     for filename in files:
+    #         name, suf = os.path.splitext(filename)  # =>文件名,文件后缀
+    #         if suf.upper() == suffix.upper():
+    #             res.append(os.path.join(root, filename))  # =>吧一串字符串组合成路径
+    #     if False is ifsubDir:
+    #         break
     return res
 
 
